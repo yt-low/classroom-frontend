@@ -1,9 +1,4 @@
-import {
-  Refine,
-  GitHubBanner,
-  WelcomePage,
-  Authenticated,
-} from "@refinedev/core";
+import { Refine, WelcomePage, Authenticated } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
@@ -33,7 +28,6 @@ import SubjectsCreate from "./pages/subjects/create";
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ThemeProvider>
           <DevtoolsProvider>
@@ -55,6 +49,7 @@ function App() {
                 {
                   name: "subjects",
                   list: "/subjects",
+                  create: "/subjects/create",
                   meta: { label: "Subjects", icon: <BookOpen /> },
                 },
               ]}

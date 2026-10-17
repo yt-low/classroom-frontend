@@ -3,14 +3,18 @@ import {
   CLOUDINARY_UPLOAD_PRESET,
   MAX_FILE_SIZE,
 } from "@/constants";
-import { UploadWidgetValue } from "@/types";
+import { UploadWidgetProps, UploadWidgetValue } from "@/types";
 import { UploadCloud } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 
-const UploadWidget = ({ value = null, onChange, disabled = false }) => {
+const UploadWidget = ({
+  value = null,
+  onChange,
+  disabled = false,
+}: UploadWidgetProps) => {
   const widgetRef = useRef<CloudinaryWidget | null>(null);
   const onChangeRef = useRef(onChange);
-  const [preview, setPreview] = useState<string | null>(value);
+  const [preview, setPreview] = useState<UploadWidgetValue | null>(value);
   const [deleteToken, setDeleteToken] = useState<string | null>(null);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
@@ -34,7 +38,7 @@ const UploadWidget = ({ value = null, onChange, disabled = false }) => {
           uploadPreset: CLOUDINARY_UPLOAD_PRESET,
           multiple: false,
           folder: "upload",
-          maxFileSize: 500000,
+          maxFileSize: MAX_FILE_SIZE,
           clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
         },
         (error, result) => {
@@ -45,9 +49,8 @@ const UploadWidget = ({ value = null, onChange, disabled = false }) => {
             };
             setPreview(payload);
             setDeleteToken(result.info.delete_token ?? null);
+            onChangeRef.current?.(payload);
           }
-
-          onChangeRef.current?.(payload);
         },
       );
 
@@ -68,13 +71,35 @@ const UploadWidget = ({ value = null, onChange, disabled = false }) => {
     if (!disabled) widgetRef.current?.open();
   };
 
-  const removeFromCloudinary = async () => {};
+  const removeFromCloudinary = async () => {
+    setPreview(null);
+    setDeleteToken(null);
+    onChangeRef.current?.(null);
+  };
 
   return (
     <div className="space-y-2">
       {preview ? (
         <div className="upload-preview">
           <img src={preview.url} alt="uploaded image" />
+          <div className="mt-2 flex gap-2 relative">
+            <button
+              type="button"
+              className="rounded bg-red-500 px-2 py-1 text-sm text-white absolute top-0"
+              onClick={removeFromCloudinary}
+              disabled={disabled}
+            >
+              Remove
+            </button>
+            <button
+              type="button"
+              className="rounded border px-2 py-1 text-sm absolute top-0 right-24"
+              onClick={openWidget}
+              disabled={disabled}
+            >
+              Replace
+            </button>
+          </div>
         </div>
       ) : (
         <div

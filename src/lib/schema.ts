@@ -1,8 +1,8 @@
 import * as z from "zod";
 
 export const facultySchema = z.object({
-    name: z.string().min(1, { message: "Name must be at least 2 characters long" }),
-    emails: z.string().email({ message: "Invalid email address" }),
+    name: z.string().min(1, { message: "Name must be at least 1 characters long" }),
+    email: z.string().email({ message: "Invalid email address" }),
     role: z.enum(['admin', 'teacher', 'student']),
     department: z.string(),
     image: z.string().optional(),
